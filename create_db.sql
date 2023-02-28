@@ -94,18 +94,18 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `proyecto_coder`.`localidad`
+-- Table `proyecto_coder`.`entidad`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `proyecto_coder`.`localidad` ;
+DROP TABLE IF EXISTS `proyecto_coder`.`entidad` ;
 
-CREATE TABLE IF NOT EXISTS `proyecto_coder`.`localidad` (
-  `idlocalidad` INT NOT NULL,
+CREATE TABLE IF NOT EXISTS `proyecto_coder`.`entidad` (
+  `identidad` INT NOT NULL,
   `nombre` VARCHAR(150) NOT NULL,
   `departamento_provincia_idprovincia` INT NOT NULL,
   `departamento_iddepartamento` INT NOT NULL,
   `organismo_idorganismo` INT NOT NULL,
   `organismo_tipo_organismo_idtipo_organismo` INT NOT NULL,
-  PRIMARY KEY (`idlocalidad`, `departamento_provincia_idprovincia`, `departamento_iddepartamento`, `organismo_idorganismo`, `organismo_tipo_organismo_idtipo_organismo`),
+  PRIMARY KEY (`identidad`, `departamento_provincia_idprovincia`, `departamento_iddepartamento`, `organismo_idorganismo`, `organismo_tipo_organismo_idtipo_organismo`),
   INDEX `fk_localidad_departamento1_idx` (`departamento_provincia_idprovincia` ASC, `departamento_iddepartamento` ASC) VISIBLE,
   INDEX `fk_localidad_organismo1_idx` (`organismo_idorganismo` ASC, `organismo_tipo_organismo_idtipo_organismo` ASC) VISIBLE,
   CONSTRAINT `fk_localidad_departamento1`
@@ -147,6 +147,111 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `proyecto_coder`.`hex500m`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `proyecto_coder`.`hex500m` ;
+
+CREATE TABLE IF NOT EXISTS `proyecto_coder`.`hex500m` (
+  `idubicacion_normal` INT NOT NULL,
+  `hex500pol` POLYGON NOT NULL COMMENT 'crear spatial index',
+  PRIMARY KEY (`idubicacion_normal`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `proyecto_coder`.`hex50m`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `proyecto_coder`.`hex50m` ;
+
+CREATE TABLE IF NOT EXISTS `proyecto_coder`.`hex50m` (
+  `idubicacion_normal` INT NOT NULL,
+  `hex50pol` POLYGON NOT NULL COMMENT 'crear spatial index',
+  PRIMARY KEY (`idubicacion_normal`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `proyecto_coder`.`hex100m`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `proyecto_coder`.`hex100m` ;
+
+CREATE TABLE IF NOT EXISTS `proyecto_coder`.`hex100m` (
+  `idubicacion_normal` INT NOT NULL,
+  `hex100pol` POLYGON NOT NULL COMMENT 'crear spatial index',
+  PRIMARY KEY (`idubicacion_normal`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `proyecto_coder`.`ubicacion`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `proyecto_coder`.`ubicacion` ;
+
+CREATE TABLE IF NOT EXISTS `proyecto_coder`.`ubicacion` (
+  `calle_nombre` VARCHAR(200) NOT NULL,
+  `calle_altura` INT NOT NULL,
+  `piso` INT NOT NULL,
+  `dpto` VARCHAR(2) NOT NULL,
+  `entre_calle_a` VARCHAR(150) NOT NULL,
+  `entre_calle_b` VARCHAR(150) NOT NULL,
+  `lat_long` POINT NULL,
+  `departamento_provincia_idprovincia` INT NOT NULL,
+  `departamento_iddepartamento` INT NOT NULL,
+  `departamento_organismo_idorganismo` INT NOT NULL,
+  `departamento_organismo_tipo_organismo_idtipo_organismo` INT NOT NULL,
+  `usuario_idusuario` INT NOT NULL,
+  `usuario_organismo_idorganismo` INT NOT NULL,
+  `usuario_organismo_tipo_organismo_idtipo_organismo` INT NOT NULL,
+  `usuario_empleados_idempleados` INT NOT NULL,
+  `hex500m_idubicacion_normal` INT NOT NULL,
+  `hex50m_idubicacion_normal` INT NOT NULL,
+  `hex100m_idubicacion_normal` INT NOT NULL,
+  `entidad_identidad` INT NOT NULL,
+  `entidad_departamento_provincia_idprovincia` INT NOT NULL,
+  `entidad_departamento_iddepartamento` INT NOT NULL,
+  `entidad_organismo_idorganismo` INT NOT NULL,
+  `entidad_organismo_tipo_organismo_idtipo_organismo` INT NOT NULL,
+  PRIMARY KEY (`calle_nombre`, `calle_altura`, `dpto`, `piso`, `entre_calle_a`, `entre_calle_b`, `departamento_provincia_idprovincia`, `departamento_iddepartamento`, `departamento_organismo_idorganismo`, `departamento_organismo_tipo_organismo_idtipo_organismo`, `usuario_idusuario`, `usuario_organismo_idorganismo`, `usuario_organismo_tipo_organismo_idtipo_organismo`, `usuario_empleados_idempleados`),
+  INDEX `fk_ubicacion_departamento1_idx` (`departamento_provincia_idprovincia` ASC, `departamento_iddepartamento` ASC, `departamento_organismo_idorganismo` ASC, `departamento_organismo_tipo_organismo_idtipo_organismo` ASC) VISIBLE,
+  INDEX `fk_ubicacion_usuario1_idx` (`usuario_idusuario` ASC, `usuario_organismo_idorganismo` ASC, `usuario_organismo_tipo_organismo_idtipo_organismo` ASC, `usuario_empleados_idempleados` ASC) VISIBLE,
+  INDEX `fk_ubicacion_hex500m1_idx` (`hex500m_idubicacion_normal` ASC) VISIBLE,
+  INDEX `fk_ubicacion_hex50m1_idx` (`hex50m_idubicacion_normal` ASC) VISIBLE,
+  INDEX `fk_ubicacion_hex100m1_idx` (`hex100m_idubicacion_normal` ASC) VISIBLE,
+  INDEX `fk_ubicacion_entidad1_idx` (`entidad_identidad` ASC, `entidad_departamento_provincia_idprovincia` ASC, `entidad_departamento_iddepartamento` ASC, `entidad_organismo_idorganismo` ASC, `entidad_organismo_tipo_organismo_idtipo_organismo` ASC) VISIBLE,
+  CONSTRAINT `fk_ubicacion_departamento1`
+    FOREIGN KEY (`departamento_provincia_idprovincia` , `departamento_iddepartamento` , `departamento_organismo_idorganismo` , `departamento_organismo_tipo_organismo_idtipo_organismo`)
+    REFERENCES `proyecto_coder`.`departamento` (`provincia_idprovincia` , `iddepartamento` , `organismo_idorganismo` , `organismo_tipo_organismo_idtipo_organismo`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ubicacion_usuario1`
+    FOREIGN KEY (`usuario_idusuario` , `usuario_organismo_idorganismo` , `usuario_organismo_tipo_organismo_idtipo_organismo` , `usuario_empleados_idempleados`)
+    REFERENCES `proyecto_coder`.`usuario` (`idusuario` , `organismo_idorganismo` , `organismo_tipo_organismo_idtipo_organismo` , `empleados_idempleados`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ubicacion_hex500m1`
+    FOREIGN KEY (`hex500m_idubicacion_normal`)
+    REFERENCES `proyecto_coder`.`hex500m` (`idubicacion_normal`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ubicacion_hex50m1`
+    FOREIGN KEY (`hex50m_idubicacion_normal`)
+    REFERENCES `proyecto_coder`.`hex50m` (`idubicacion_normal`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ubicacion_hex100m1`
+    FOREIGN KEY (`hex100m_idubicacion_normal`)
+    REFERENCES `proyecto_coder`.`hex100m` (`idubicacion_normal`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ubicacion_entidad1`
+    FOREIGN KEY (`entidad_identidad` , `entidad_departamento_provincia_idprovincia` , `entidad_departamento_iddepartamento` , `entidad_organismo_idorganismo` , `entidad_organismo_tipo_organismo_idtipo_organismo`)
+    REFERENCES `proyecto_coder`.`entidad` (`identidad` , `departamento_provincia_idprovincia` , `departamento_iddepartamento` , `organismo_idorganismo` , `organismo_tipo_organismo_idtipo_organismo`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `proyecto_coder`.`establecimiento`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `proyecto_coder`.`establecimiento` ;
@@ -154,7 +259,37 @@ DROP TABLE IF EXISTS `proyecto_coder`.`establecimiento` ;
 CREATE TABLE IF NOT EXISTS `proyecto_coder`.`establecimiento` (
   `idestablecimiento` INT NOT NULL AUTO_INCREMENT,
   `establecimientocol` VARCHAR(45) NULL,
-  PRIMARY KEY (`idestablecimiento`))
+  `usuario_idusuario` INT NOT NULL,
+  `usuario_organismo_idorganismo` INT NOT NULL,
+  `usuario_organismo_tipo_organismo_idtipo_organismo` INT NOT NULL,
+  `usuario_empleados_idempleados` INT NOT NULL,
+  `ubicacion_calle_nombre` VARCHAR(200) NOT NULL,
+  `ubicacion_calle_altura` INT NOT NULL,
+  `ubicacion_dpto` VARCHAR(2) NOT NULL,
+  `ubicacion_piso` INT NOT NULL,
+  `ubicacion_entre_calle_a` VARCHAR(150) NOT NULL,
+  `ubicacion_entre_calle_b` VARCHAR(150) NOT NULL,
+  `ubicacion_departamento_provincia_idprovincia` INT NOT NULL,
+  `ubicacion_departamento_iddepartamento` INT NOT NULL,
+  `ubicacion_departamento_organismo_idorganismo` INT NOT NULL,
+  `ubicacion_departamento_organismo_tipo_organismo_idtipo_organismo` INT NOT NULL,
+  `ubicacion_usuario_idusuario` INT NOT NULL,
+  `ubicacion_usuario_organismo_idorganismo` INT NOT NULL,
+  `ubicacion_usuario_organismo_tipo_organismo_idtipo_organismo` INT NOT NULL,
+  `ubicacion_usuario_empleados_idempleados` INT NOT NULL,
+  PRIMARY KEY (`idestablecimiento`, `usuario_idusuario`, `usuario_organismo_idorganismo`, `usuario_organismo_tipo_organismo_idtipo_organismo`, `usuario_empleados_idempleados`),
+  INDEX `fk_establecimiento_usuario1_idx` (`usuario_idusuario` ASC, `usuario_organismo_idorganismo` ASC, `usuario_organismo_tipo_organismo_idtipo_organismo` ASC, `usuario_empleados_idempleados` ASC) VISIBLE,
+  INDEX `fk_establecimiento_ubicacion1_idx` (`ubicacion_calle_nombre` ASC, `ubicacion_calle_altura` ASC, `ubicacion_dpto` ASC, `ubicacion_piso` ASC, `ubicacion_entre_calle_a` ASC, `ubicacion_entre_calle_b` ASC, `ubicacion_departamento_provincia_idprovincia` ASC, `ubicacion_departamento_iddepartamento` ASC, `ubicacion_departamento_organismo_idorganismo` ASC, `ubicacion_departamento_organismo_tipo_organismo_idtipo_organismo` ASC, `ubicacion_usuario_idusuario` ASC, `ubicacion_usuario_organismo_idorganismo` ASC, `ubicacion_usuario_organismo_tipo_organismo_idtipo_organismo` ASC, `ubicacion_usuario_empleados_idempleados` ASC) VISIBLE,
+  CONSTRAINT `fk_establecimiento_usuario1`
+    FOREIGN KEY (`usuario_idusuario` , `usuario_organismo_idorganismo` , `usuario_organismo_tipo_organismo_idtipo_organismo` , `usuario_empleados_idempleados`)
+    REFERENCES `proyecto_coder`.`usuario` (`idusuario` , `organismo_idorganismo` , `organismo_tipo_organismo_idtipo_organismo` , `empleados_idempleados`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_establecimiento_ubicacion1`
+    FOREIGN KEY (`ubicacion_calle_nombre` , `ubicacion_calle_altura` , `ubicacion_dpto` , `ubicacion_piso` , `ubicacion_entre_calle_a` , `ubicacion_entre_calle_b` , `ubicacion_departamento_provincia_idprovincia` , `ubicacion_departamento_iddepartamento` , `ubicacion_departamento_organismo_idorganismo` , `ubicacion_departamento_organismo_tipo_organismo_idtipo_organismo` , `ubicacion_usuario_idusuario` , `ubicacion_usuario_organismo_idorganismo` , `ubicacion_usuario_organismo_tipo_organismo_idtipo_organismo` , `ubicacion_usuario_empleados_idempleados`)
+    REFERENCES `proyecto_coder`.`ubicacion` (`calle_nombre` , `calle_altura` , `dpto` , `piso` , `entre_calle_a` , `entre_calle_b` , `departamento_provincia_idprovincia` , `departamento_iddepartamento` , `departamento_organismo_idorganismo` , `departamento_organismo_tipo_organismo_idtipo_organismo` , `usuario_idusuario` , `usuario_organismo_idorganismo` , `usuario_organismo_tipo_organismo_idtipo_organismo` , `usuario_empleados_idempleados`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
@@ -226,161 +361,6 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `proyecto_coder`.`hex50m`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `proyecto_coder`.`hex50m` ;
-
-CREATE TABLE IF NOT EXISTS `proyecto_coder`.`hex50m` (
-  `idubicacion_normal` INT NOT NULL,
-  `hex50pol` POLYGON NOT NULL COMMENT 'crear spatial index',
-  PRIMARY KEY (`idubicacion_normal`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `proyecto_coder`.`hex500m`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `proyecto_coder`.`hex500m` ;
-
-CREATE TABLE IF NOT EXISTS `proyecto_coder`.`hex500m` (
-  `idubicacion_normal` INT NOT NULL,
-  `hex500pol` POLYGON NOT NULL COMMENT 'crear spatial index',
-  PRIMARY KEY (`idubicacion_normal`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `proyecto_coder`.`hex100m`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `proyecto_coder`.`hex100m` ;
-
-CREATE TABLE IF NOT EXISTS `proyecto_coder`.`hex100m` (
-  `idubicacion_normal` INT NOT NULL,
-  `hex100pol` POLYGON NOT NULL COMMENT 'crear spatial index',
-  PRIMARY KEY (`idubicacion_normal`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `proyecto_coder`.`calles_normal`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `proyecto_coder`.`calles_normal` ;
-
-CREATE TABLE IF NOT EXISTS `proyecto_coder`.`calles_normal` (
-  `idcalles_normal` INT NOT NULL,
-  PRIMARY KEY (`idcalles_normal`))
-ENGINE = InnoDB
-COMMENT = 'bulk upload del callejero de datos.gob.ar';
-
-
--- -----------------------------------------------------
--- Table `proyecto_coder`.`ubicacion`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `proyecto_coder`.`ubicacion` ;
-
-CREATE TABLE IF NOT EXISTS `proyecto_coder`.`ubicacion` (
-  `calle_nombre` VARCHAR(200) NOT NULL,
-  `calle_altura` INT NOT NULL,
-  `piso` INT NOT NULL,
-  `dpto` VARCHAR(2) NOT NULL,
-  `entre_calle_a` VARCHAR(150) NOT NULL,
-  `entre_calle_b` VARCHAR(150) NOT NULL,
-  `lat_long` POINT NULL,
-  `localidad_idlocalidad` INT NOT NULL,
-  `localidad_departamento_provincia_idprovincia` INT NOT NULL,
-  `localidad_departamento_iddepartamento` INT NOT NULL,
-  `localidad_organismo_idorganismo` INT NOT NULL,
-  `localidad_organismo_tipo_organismo_idtipo_organismo` INT NOT NULL,
-  `departamento_provincia_idprovincia` INT NOT NULL,
-  `departamento_iddepartamento` INT NOT NULL,
-  `departamento_organismo_idorganismo` INT NOT NULL,
-  `departamento_organismo_tipo_organismo_idtipo_organismo` INT NOT NULL,
-  `ubicacion_normal_idubicacion_normal` INT NOT NULL,
-  `hex500m_idubicacion_normal` INT NOT NULL,
-  `hex100m_idubicacion_normal` INT NOT NULL,
-  `calles_normal_idcalles_normal` INT NOT NULL,
-  INDEX `fk_ubicacion_localidad1_idx` (`localidad_idlocalidad` ASC, `localidad_departamento_provincia_idprovincia` ASC, `localidad_departamento_iddepartamento` ASC, `localidad_organismo_idorganismo` ASC, `localidad_organismo_tipo_organismo_idtipo_organismo` ASC) VISIBLE,
-  PRIMARY KEY (`calle_nombre`, `calle_altura`, `dpto`, `piso`, `entre_calle_a`, `entre_calle_b`, `departamento_provincia_idprovincia`, `departamento_iddepartamento`, `departamento_organismo_idorganismo`, `departamento_organismo_tipo_organismo_idtipo_organismo`),
-  INDEX `fk_ubicacion_departamento1_idx` (`departamento_provincia_idprovincia` ASC, `departamento_iddepartamento` ASC, `departamento_organismo_idorganismo` ASC, `departamento_organismo_tipo_organismo_idtipo_organismo` ASC) VISIBLE,
-  INDEX `fk_ubicacion_ubicacion_normal1_idx` (`ubicacion_normal_idubicacion_normal` ASC) VISIBLE,
-  INDEX `fk_ubicacion_hex500m1_idx` (`hex500m_idubicacion_normal` ASC) VISIBLE,
-  INDEX `fk_ubicacion_hex100m1_idx` (`hex100m_idubicacion_normal` ASC) VISIBLE,
-  INDEX `fk_ubicacion_calles_normal1_idx` (`calles_normal_idcalles_normal` ASC) VISIBLE,
-  CONSTRAINT `fk_ubicacion_localidad1`
-    FOREIGN KEY (`localidad_idlocalidad` , `localidad_departamento_provincia_idprovincia` , `localidad_departamento_iddepartamento` , `localidad_organismo_idorganismo` , `localidad_organismo_tipo_organismo_idtipo_organismo`)
-    REFERENCES `proyecto_coder`.`localidad` (`idlocalidad` , `departamento_provincia_idprovincia` , `departamento_iddepartamento` , `organismo_idorganismo` , `organismo_tipo_organismo_idtipo_organismo`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_ubicacion_departamento1`
-    FOREIGN KEY (`departamento_provincia_idprovincia` , `departamento_iddepartamento` , `departamento_organismo_idorganismo` , `departamento_organismo_tipo_organismo_idtipo_organismo`)
-    REFERENCES `proyecto_coder`.`departamento` (`provincia_idprovincia` , `iddepartamento` , `organismo_idorganismo` , `organismo_tipo_organismo_idtipo_organismo`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_ubicacion_ubicacion_normal1`
-    FOREIGN KEY (`ubicacion_normal_idubicacion_normal`)
-    REFERENCES `proyecto_coder`.`hex50m` (`idubicacion_normal`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_ubicacion_hex500m1`
-    FOREIGN KEY (`hex500m_idubicacion_normal`)
-    REFERENCES `proyecto_coder`.`hex500m` (`idubicacion_normal`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_ubicacion_hex100m1`
-    FOREIGN KEY (`hex100m_idubicacion_normal`)
-    REFERENCES `proyecto_coder`.`hex100m` (`idubicacion_normal`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_ubicacion_calles_normal1`
-    FOREIGN KEY (`calles_normal_idcalles_normal`)
-    REFERENCES `proyecto_coder`.`calles_normal` (`idcalles_normal`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `proyecto_coder`.`registro_establecimiento`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `proyecto_coder`.`registro_establecimiento` ;
-
-CREATE TABLE IF NOT EXISTS `proyecto_coder`.`registro_establecimiento` (
-  `idregistro_establecimiento` INT NOT NULL AUTO_INCREMENT,
-  `fecha_reg` TIMESTAMP NOT NULL,
-  `ubicacion_calle_nombre` VARCHAR(200) NOT NULL,
-  `ubicacion_calle_altura` INT NOT NULL,
-  `ubicacion_dpto` VARCHAR(2) NOT NULL,
-  `ubicacion_piso` INT NOT NULL,
-  `ubicacion_entre_calle_a` VARCHAR(150) NOT NULL,
-  `ubicacion_entre_calle_b` VARCHAR(150) NOT NULL,
-  `establecimiento_idestablecimiento` INT NOT NULL,
-  `usuario_idusuario` INT NOT NULL,
-  `usuario_organismo_idorganismo` INT NOT NULL,
-  `usuario_organismo_tipo_organismo_idtipo_organismo` INT NOT NULL,
-  `usuario_empleados_idempleados` INT NOT NULL,
-  PRIMARY KEY (`idregistro_establecimiento`, `ubicacion_calle_nombre`, `ubicacion_calle_altura`, `ubicacion_dpto`, `ubicacion_piso`, `ubicacion_entre_calle_a`, `ubicacion_entre_calle_b`, `establecimiento_idestablecimiento`, `usuario_idusuario`, `usuario_organismo_idorganismo`, `usuario_organismo_tipo_organismo_idtipo_organismo`, `usuario_empleados_idempleados`),
-  INDEX `fk_registro_establecimiento_ubicacion1_idx` (`ubicacion_calle_nombre` ASC, `ubicacion_calle_altura` ASC, `ubicacion_dpto` ASC, `ubicacion_piso` ASC, `ubicacion_entre_calle_a` ASC, `ubicacion_entre_calle_b` ASC) VISIBLE,
-  INDEX `fk_registro_establecimiento_establecimiento1_idx` (`establecimiento_idestablecimiento` ASC) VISIBLE,
-  INDEX `fk_registro_establecimiento_usuario1_idx` (`usuario_idusuario` ASC, `usuario_organismo_idorganismo` ASC, `usuario_organismo_tipo_organismo_idtipo_organismo` ASC, `usuario_empleados_idempleados` ASC) VISIBLE,
-  CONSTRAINT `fk_registro_establecimiento_ubicacion1`
-    FOREIGN KEY (`ubicacion_calle_nombre` , `ubicacion_calle_altura` , `ubicacion_dpto` , `ubicacion_piso` , `ubicacion_entre_calle_a` , `ubicacion_entre_calle_b`)
-    REFERENCES `proyecto_coder`.`ubicacion` (`calle_nombre` , `calle_altura` , `dpto` , `piso` , `entre_calle_a` , `entre_calle_b`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_registro_establecimiento_establecimiento1`
-    FOREIGN KEY (`establecimiento_idestablecimiento`)
-    REFERENCES `proyecto_coder`.`establecimiento` (`idestablecimiento`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_registro_establecimiento_usuario1`
-    FOREIGN KEY (`usuario_idusuario` , `usuario_organismo_idorganismo` , `usuario_organismo_tipo_organismo_idtipo_organismo` , `usuario_empleados_idempleados`)
-    REFERENCES `proyecto_coder`.`usuario` (`idusuario` , `organismo_idorganismo` , `organismo_tipo_organismo_idtipo_organismo` , `empleados_idempleados`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `proyecto_coder`.`funcionamiento`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `proyecto_coder`.`funcionamiento` ;
@@ -409,6 +389,18 @@ CREATE TABLE IF NOT EXISTS `proyecto_coder`.`funcionamiento` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `proyecto_coder`.`callejero`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `proyecto_coder`.`callejero` ;
+
+CREATE TABLE IF NOT EXISTS `proyecto_coder`.`callejero` (
+  `FID` INT NOT NULL,
+  PRIMARY KEY (`FID`))
+ENGINE = InnoDB
+COMMENT = 'bulk upload del callejero de datos.gob.ar';
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
